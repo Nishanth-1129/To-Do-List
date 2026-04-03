@@ -1,71 +1,105 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const todoInput = document.getElementById('todo-input');
-    const addTaskButton = document.getElementById('add-task');
-    const todoList = document.getElementById('todo-list');
-    const itemsLeft = document.getElementById('items-left');
-    const clearCompletedButton = document.getElementById('clear-completed');
-    const filterButtons = document.querySelectorAll('.filter-button');
-  
-    let todos = [];
-  
-    const updateItemsLeft = () => {
-      const activeCount = todos.filter(todo => !todo.completed).length;
-      itemsLeft.textContent = `${activeCount} tasks left`;
-    };
-  
-    const renderTodos = (filter = 'all') => {
-      todoList.innerHTML = '';
-      const filteredTodos = todos.filter(todo => {
-        if (filter === 'active') return !todo.completed;
-        if (filter === 'completed') return todo.completed;
-        return true;
-      });
-  
-      filteredTodos.forEach((todo, index) => {
-        const li = document.createElement('li');
-        li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
-        li.innerHTML = `
-          <span class="todo-text">${todo.text}</span>
-          <input type="checkbox" class="toggle-completed" ${
-            todo.completed ? 'checked' : ''
-          } data-index="${index}">
-        `;
-        todoList.appendChild(li);
-      });
-  
-      updateItemsLeft();
-    };
-  
-    addTaskButton.addEventListener('click', () => {
-      const text = todoInput.value.trim();
-      if (text) {
-        todos.push({ text, completed: false });
-        todoInput.value = '';
-        renderTodos();
-      }
-    });
-  
-    todoList.addEventListener('change', (e) => {
-      if (e.target.classList.contains('toggle-completed')) {
-        const index = e.target.dataset.index;
-        todos[index].completed = e.target.checked;
-        renderTodos();
-      }
-    });
-  
-    clearCompletedButton.addEventListener('click', () => {
-      todos = todos.filter(todo => !todo.completed);
-      renderTodos();
-    });
-  
-    filterButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        const filter = button.id.replace('filter-', '');
-        renderTodos(filter);
-      });
-    });
-  
-    renderTodos();
-  });
+let todoItemsContainer = document.getElementById("todoItemsContainer");
+let addTodoButton = document.getElementById("addTodoButton");
+let saveTodoButton = document.getElementById("saveTodoButton");
+
+function getTodoListFromLocalStorage() {
+  let stringifiedTodoList = localStorage.getItem("todoList");
+  let parsedTodoList = JSON.parse(stringifiedTodoList);
+  if (parsedTodoList === null) {
+    return [];
+  } else {
+    return parsedTodoList;
+  }
+}
+
+let todoList = getTodoListFromLocalStorage();
+let todosCount = todoList.length;
+
+saveTodoButton.onclick = function () {
+  localStorage.setItem("todoList", JSON.stringify(todoList));
+};
+
+function onTodoStatusChange(checkboxId, labelId) {
+  let checkboxElement = document.getElementById(checkboxId);
+  let labelElement = document.getElementById(labelId);
+  labelElement.classList.toggle("checked");
+}
+
+function onDeleteTodo(todoId) {
+  let todoElement = document.getElementById(todoId);
+  todoItemsContainer.removeChild(todoElement);
+}
+
+function createAndAppendTodo(todo) {
+  let todoId = "todo" + todo.uniqueNo;
+  let checkboxId = "checkbox" + todo.uniqueNo;
+  let labelId = "label" + todo.uniqueNo;
+
+  let todoElement = document.createElement("li");
+  todoElement.classList.add("todo-item-container", "d-flex", "flex-row");
+  todoElement.id = todoId;
+  todoItemsContainer.appendChild(todoElement);
+
+  let inputElement = document.createElement("input");
+  inputElement.type = "checkbox";
+  inputElement.id = checkboxId;
+
+  inputElement.onclick = function() {
+    onTodoStatusChange(checkboxId, labelId);
+  };
+
+  inputElement.classList.add("checkbox-input");
+  todoElement.appendChild(inputElement);
+
+  let labelContainer = document.createElement("div");
+  labelContainer.classList.add("label-container", "d-flex", "flex-row");
+  todoElement.appendChild(labelContainer);
+
+  let labelElement = document.createElement("label");
+  labelElement.setAttribute("for", checkboxId);
+  labelElement.id = labelId;
+  labelElement.classList.add("checkbox-label");
+  labelElement.textContent = todo.text;
+  labelContainer.appendChild(labelElement);
+
+  let deleteIconContainer = document.createElement("div");
+  deleteIconContainer.classList.add("delete-icon-container");
+  labelContainer.appendChild(deleteIconContainer);
+
+  let deleteIcon = document.createElement("i");
+  deleteIcon.classList.add("far", "fa-trash-alt", "delete-icon");
+
+  deleteIcon.onclick = function () {
+    onDeleteTodo(todoId);
+  };
+
+  deleteIconContainer.appendChild(deleteIcon);
+}
+
+for (let todo of todoList) {
+  createAndAppendTodo(todo);
+}
+
+function onAddTodo() {
+  let userInputElement = document.getElementById("todoUserInput");
+  let userInputValue = userInputElement.value;
+
+  if (userInputValue === "") {
+    alert("Enter Valid Text");
+    return;
+  }
+
+  todosCount = todosCount + 1;
+
+  let newTodo = {
+    text: userInputValue,
+    uniqueNo: todosCount,
+  };
+  todoList.push(newTodo);
+  createAndAppendTodo(newTodo);
+  userInputElement.value = "";
+}
+
+addTodoButton.onclick = function () {
+  onAddTodo();
+};
