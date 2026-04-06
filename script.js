@@ -77,12 +77,16 @@ function createAndAppendTodo(todo) {
   }
   labelContainer.appendChild(labelElement);
 
+  // ... (previous code inside createAndAppendTodo)
+
   let deleteIconContainer = document.createElement("div");
   deleteIconContainer.classList.add("delete-icon-container");
   labelContainer.appendChild(deleteIconContainer);
 
   let deleteIcon = document.createElement("i");
-  deleteIcon.classList.add("far", "fa-trash-alt", "delete-icon");
+  
+  // ADD/REPLACE THIS LINE HERE:
+  deleteIcon.classList.add("fas", "fa-trash-alt", "delete-icon");
 
   deleteIcon.onclick = function () {
     onDeleteTodo(todoId);
