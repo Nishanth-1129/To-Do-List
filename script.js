@@ -140,5 +140,6 @@ function onAddTodo() {
 }
 
 addTodoButton.onclick = function () {
+  console.log("Add button was clicked!"); // If this shows up in the console, the button works, but the logic inside onAddTodo is broken.
   onAddTodo();
 };
