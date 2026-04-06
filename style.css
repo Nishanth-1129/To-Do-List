@@ -97,3 +97,11 @@
 .checked {
   text-decoration: line-through;
 }
+.delete-icon {
+  color: #616e7c; /* A nice grey color */
+  cursor: pointer;
+}
+
+.delete-icon:hover {
+  color: #ff0000; /* Turns red when you hover over it */
+}
