@@ -19,15 +19,52 @@ saveTodoButton.onclick = function () {
   localStorage.setItem("todoList", JSON.stringify(todoList));
 };
 
-function onTodoStatusChange(checkboxId, labelId) {
-  let checkboxElement = document.getElementById(checkboxId);
+// Updated Status Change Function
+function onTodoStatusChange(checkboxId, labelId, todoId) {
   let labelElement = document.getElementById(labelId);
   labelElement.classList.toggle("checked");
+
+  // Update the isChecked property in the todoList array
+  let todoObjectIndex = todoList.findIndex(function(eachTodo) {
+    let eachTodoId = "todo" + eachTodo.uniqueNo;
+    return eachTodoId === todoId;
+  });
+
+  let todoObject = todoList[todoObjectIndex];
+  todoObject.isChecked = !todoObject.isChecked; // Toggle the boolean
+}
+
+// Updated createAndAppendTodo (add this inside the function)
+function createAndAppendTodo(todo) {
+  // ... (previous code)
+  
+  let inputElement = document.createElement("input");
+  inputElement.type = "checkbox";
+  inputElement.id = checkboxId;
+  inputElement.checked = todo.isChecked; // Set initial state
+  
+  if (todo.isChecked === true) {
+    labelElement.classList.add("checked");
+  }
+  
+  inputElement.onclick = function() {
+    onTodoStatusChange(checkboxId, labelId, todoId); // Pass todoId here
+  };
+  
+  // ... (rest of function)
 }
 
 function onDeleteTodo(todoId) {
   let todoElement = document.getElementById(todoId);
   todoItemsContainer.removeChild(todoElement);
+
+  // Find the index of the item in the array and remove it
+  let deleteElementIndex = todoList.findIndex(function(eachTodo) {
+    let eachTodoId = "todo" + eachTodo.uniqueNo;
+    return eachTodoId === todoId;
+  });
+
+  todoList.splice(deleteElementIndex, 1);
 }
 
 function createAndAppendTodo(todo) {
@@ -81,13 +118,15 @@ for (let todo of todoList) {
 }
 
 function onAddTodo() {
-  let userInputElement = document.getElementById("todoUserInput");
-  let userInputValue = userInputElement.value;
-
-  if (userInputValue === "") {
-    alert("Enter Valid Text");
-    return;
-  }
+  // ... (input validation)
+  
+  let newTodo = {
+    text: userInputValue,
+    uniqueNo: todosCount,
+    isChecked: false, // Ensure this is present
+  };
+  // ...
+}
 
   todosCount = todosCount + 1;
 
