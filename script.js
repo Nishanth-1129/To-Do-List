@@ -5,11 +5,7 @@ let saveTodoButton = document.getElementById("saveTodoButton");
 function getTodoListFromLocalStorage() {
   let stringifiedTodoList = localStorage.getItem("todoList");
   let parsedTodoList = JSON.parse(stringifiedTodoList);
-  if (parsedTodoList === null) {
-    return [];
-  } else {
-    return parsedTodoList;
-  }
+  return parsedTodoList === null ? [] : parsedTodoList;
 }
 
 let todoList = getTodoListFromLocalStorage();
@@ -19,51 +15,29 @@ saveTodoButton.onclick = function () {
   localStorage.setItem("todoList", JSON.stringify(todoList));
 };
 
-// Updated Status Change Function
 function onTodoStatusChange(checkboxId, labelId, todoId) {
   let labelElement = document.getElementById(labelId);
   labelElement.classList.toggle("checked");
-
-  // Update the isChecked property in the todoList array
+  
+  // Update the status in the array so it saves correctly
   let todoObjectIndex = todoList.findIndex(function(eachTodo) {
     let eachTodoId = "todo" + eachTodo.uniqueNo;
     return eachTodoId === todoId;
   });
-
+  
   let todoObject = todoList[todoObjectIndex];
-  todoObject.isChecked = !todoObject.isChecked; // Toggle the boolean
-}
-
-// Updated createAndAppendTodo (add this inside the function)
-function createAndAppendTodo(todo) {
-  // ... (previous code)
-  
-  let inputElement = document.createElement("input");
-  inputElement.type = "checkbox";
-  inputElement.id = checkboxId;
-  inputElement.checked = todo.isChecked; // Set initial state
-  
-  if (todo.isChecked === true) {
-    labelElement.classList.add("checked");
-  }
-  
-  inputElement.onclick = function() {
-    onTodoStatusChange(checkboxId, labelId, todoId); // Pass todoId here
-  };
-  
-  // ... (rest of function)
+  todoObject.isChecked = !todoObject.isChecked;
 }
 
 function onDeleteTodo(todoId) {
   let todoElement = document.getElementById(todoId);
   todoItemsContainer.removeChild(todoElement);
 
-  // Find the index of the item in the array and remove it
-  let deleteElementIndex = todoList.findIndex(function(eachTodo) {
+  // Remove from the array as well
+  let deleteElementIndex = todoList.findIndex(function (eachTodo) {
     let eachTodoId = "todo" + eachTodo.uniqueNo;
     return eachTodoId === todoId;
   });
-
   todoList.splice(deleteElementIndex, 1);
 }
 
@@ -80,9 +54,10 @@ function createAndAppendTodo(todo) {
   let inputElement = document.createElement("input");
   inputElement.type = "checkbox";
   inputElement.id = checkboxId;
+  inputElement.checked = todo.isChecked;
 
   inputElement.onclick = function() {
-    onTodoStatusChange(checkboxId, labelId);
+    onTodoStatusChange(checkboxId, labelId, todoId);
   };
 
   inputElement.classList.add("checkbox-input");
@@ -97,6 +72,9 @@ function createAndAppendTodo(todo) {
   labelElement.id = labelId;
   labelElement.classList.add("checkbox-label");
   labelElement.textContent = todo.text;
+  if (todo.isChecked === true) {
+    labelElement.classList.add("checked");
+  }
   labelContainer.appendChild(labelElement);
 
   let deleteIconContainer = document.createElement("div");
@@ -118,21 +96,20 @@ for (let todo of todoList) {
 }
 
 function onAddTodo() {
-  // ... (input validation)
-  
-  let newTodo = {
-    text: userInputValue,
-    uniqueNo: todosCount,
-    isChecked: false, // Ensure this is present
-  };
-  // ...
-}
+  let userInputElement = document.getElementById("todoUserInput");
+  let userInputValue = userInputElement.value;
+
+  if (userInputValue === "") {
+    alert("Enter Valid Text");
+    return;
+  }
 
   todosCount = todosCount + 1;
 
   let newTodo = {
     text: userInputValue,
     uniqueNo: todosCount,
+    isChecked: false
   };
   todoList.push(newTodo);
   createAndAppendTodo(newTodo);
@@ -140,6 +117,5 @@ function onAddTodo() {
 }
 
 addTodoButton.onclick = function () {
-  console.log("Add button was clicked!"); // If this shows up in the console, the button works, but the logic inside onAddTodo is broken.
   onAddTodo();
 };
