@@ -1,8 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Bree+Serif&family=Caveat:wght@400;700&family=Lobster&family=Monoton&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display+SC:ital,wght@0,400;0,700;1,700&family=Playfair+Display:ital,wght@0,400;0,700;1,700&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&family=Source+Sans+Pro:ital,wght@0,400;0,700;1,700&family=Work+Sans:ital,wght@0,400;0,700;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
 .todos-bg-container {
   background-color: #f9fbfe;
-  height: 100vh;
+  min-height: 100vh;
+  padding-bottom: 20px;
 }
 
 .todos-heading {
@@ -21,8 +22,6 @@
 }
 
 .create-task-heading-subpart {
-  font-family: "Roboto";
-  font-size: 32px;
   font-weight: 500;
 }
 
@@ -32,15 +31,10 @@
   font-weight: 700;
 }
 
-.todo-items-heading-subpart {
-  font-family: "Roboto";
-  font-size: 32px;
-  font-weight: 500;
-}
-
 .todo-items-container {
   margin: 0px;
   padding: 0px;
+  list-style-type: none;
 }
 
 .todo-item-container {
@@ -50,9 +44,7 @@
 .todo-user-input {
   background-color: white;
   width: 100%;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #e4e7eb;
+  border: 1px solid #e4e7eb;
   border-radius: 10px;
   margin-top: 10px;
   padding: 15px;
@@ -63,26 +55,18 @@
   background-color: #4c63b6;
   font-family: "Roboto";
   font-size: 18px;
-  border-width: 0px;
+  border: none;
   border-radius: 4px;
   margin-top: 20px;
   margin-bottom: 50px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-right: 20px;
-  padding-left: 20px;
+  padding: 5px 20px;
 }
 
 .label-container {
   background-color: #e6f6ff;
   width: 100%;
-  border-style: solid;
-  border-width: 5px;
-  border-color: #096f92;
-  border-right: none;
-  border-top: none;
-  border-bottom: none;
-  border-radius: 4px;
+  border-left: 5px solid #096f92;
+  border-radius: 0 4px 4px 0;
 }
 
 .checkbox-input {
@@ -95,14 +79,9 @@
 .checkbox-label {
   font-family: "Roboto";
   font-size: 16px;
-  font-weight: 400;
   width: 82%;
   margin: 0px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-radius: 5px;
+  padding: 10px 20px;
 }
 
 .delete-icon-container {
@@ -112,6 +91,7 @@
 
 .delete-icon {
   padding: 15px;
+  cursor: pointer;
 }
 
 .checked {
